@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.13/html-to-image.min.js" integrity="sha512-iZ2ORl595Wx6miw+GuadDet4WQbdSWS3JLMoNfY8cRGoEFy6oT3G9IbcrBeL6AfkgpA51ETt/faX6yLV+/gFJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+      (function() {
+        const originalConsole = window.console;
+        window.console = {
+          log: (...args) => {
+            originalConsole.log(...args);
+            window.parent.postMessage({ type: 'console', message: args.join(' ') }, '*');
+          },
+          error: (...args) => {
+            originalConsole.error(...args);
+            window.parent.postMessage({ type: 'console', message: 'Error: ' + args.join(' ') }, '*');
+          },
+          warn: (...args) => {
+            originalConsole.warn(...args);
+            window.parent.postMessage({ type: 'console', message: 'Warning: ' + args.join(' ') }, '*');
+          }
+        };
+
+        let requestId = 0;
+        let callbacksMap = new Map();
+        let streamControllers = new Map();
+        
+        window.claude = {
+          complete: (prompt) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'claudeComplete', id, prompt }, '*');
+            });
+          }
+        };
+
+        window.storage = {
+          get: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageGet', id, key, shared }, '*');
+            });
+          },
+          set: (key, value, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageSet', id, key, value, shared }, '*');
+            });
+          },
+          delete: (key, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageDelete', id, key, shared }, '*');
+            });
+          },
+          list: (prefix, shared = false) => {
+            return new Promise((resolve, reject) => {
+              const id = requestId++;
+              callbacksMap.set(id, { resolve, reject });
+              window.parent.postMessage({ type: 'storageList', id, prefix, shared }, '*');
+            });
+          }
+        };
+
+        let pendingBlobs = new Map();
+        URL.createObjectURL = (blob) => {
+          // Store the blob and create an ID and URL for it
+          const blobId = `blob-${Date.now()}-${Math.random()}`;
+          pendingBlobs.set(blobId, blob);
+          return `blob-request://${blobId}`;
+        };
+
+        URL.revokeObjectURL = (url) => {
+          // Remove the blob from our store
+          const blobId = url.replace("blob-request://", "");
+          pendingBlobs.delete(blobId);
+        };
+
+        const getBlobFromURL = (url) => {
+          const blobId = url.replace("blob-request://", "");
+          return pendingBlobs.get(blobId);
+        };
+
+        // Override global fetch with streaming support
+        window.fetch = (url, init = {}) => {
+          return new Promise((resolve, reject) => {
+            const id = requestId++;
+            const channelId = `fetch-${id}-${Date.now()}`;
+            
+            callbacksMap.set(id, { 
+              resolve: (response) => {
+                // Create a ReadableStream for the response body
+                const stream = new ReadableStream({
+                  start(controller) {
+                    streamControllers.set(channelId, controller);
+                  },
+                  cancel() {
+                    streamControllers.delete(channelId);
+                  }
+                });
+                
+                // Create and return the Response with the stream
+                resolve(new Response(stream, {
+                  status: response.status,
+                  statusText: response.statusText,
+                  headers: response.headers
+                }));
+              },
+              reject,
+              channelId
+            });
+            
+            window.parent.postMessage({
+              type: 'proxyFetch',
+              id,
+              url,
+              init,
+              channelId
+            }, '*');
+          });
+        };
+
+        window.addEventListener('message', async (event) => {
+          if (event.data.type === 'takeScreenshot') {
+            const rootElement = document.getElementById('artifacts-component-root-html');
+            if (!rootElement) {
+              window.parent.postMessage({
+                type: 'screenshotError',
+                error: new Error('Root element not found'),
+              }, '*');
+            }
+            const screenshot = await htmlToImage.toPng(rootElement, {
+              imagePlaceholder:
+                "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjePDgwX8ACOQDoNsk0PMAAAAASUVORK5CYII=",
+            });
+            window.parent.postMessage({
+              type: 'screenshotData',
+              data: screenshot,
+            }, '*');
+          } else if (event.data.type === 'claudeComplete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.completion);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'proxyFetchResponse') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+              callbacksMap.delete(event.data.id);
+            } else {
+              // Initial response with headers, status, etc.
+              callback.resolve({
+                status: event.data.status,
+                statusText: event.data.statusText,
+                headers: event.data.headers
+              });
+              // Don't delete the callback yet if streaming
+              if (!event.data.body) {
+                callbacksMap.delete(event.data.id);
+              }
+            }
+          } else if (event.data.type === 'proxyFetchStream') {
+            // Handle streaming data chunks
+            const controller = streamControllers.get(event.data.channelId);
+            if (controller) {
+              if (event.data.error) {
+                controller.error(new Error(event.data.error));
+                streamControllers.delete(event.data.channelId);
+              } else if (event.data.done) {
+                controller.close();
+                streamControllers.delete(event.data.channelId);
+                // Clean up the callback
+                const callback = Array.from(callbacksMap.entries()).find(
+                  ([_, value]) => value.channelId === event.data.channelId
+                );
+                if (callback) {
+                  callbacksMap.delete(callback[0]);
+                }
+              } else if (event.data.chunk) {
+                controller.enqueue(new Uint8Array(event.data.chunk));
+              }
+            }
+          } else if (event.data.type === 'storageGet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageSet') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageDelete') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          } else if (event.data.type === 'storageList') {
+            const callback = callbacksMap.get(event.data.id);
+            if (event.data.error) {
+              callback.reject(new Error(event.data.error));
+            } else {
+              callback.resolve(event.data.result);
+            }
+            callbacksMap.delete(event.data.id);
+          }
+        });
+
+        window.addEventListener('click', (event) => {
+          const isEl = event.target instanceof HTMLElement;
+          if (!isEl) return;
+    
+          // find ancestor links
+          const linkEl = event.target.closest("a");
+          if (!linkEl || !linkEl.href) return;
+    
+          event.preventDefault();
+          event.stopImmediatePropagation();
+    
+          if (linkEl.href.startsWith("blob-request:")) {
+            const blob = getBlobFromURL(linkEl.href);
+            if (!blob) return;
+            void blob.arrayBuffer().then((data) => {
+              window.parent.postMessage({
+                type: "downloadFile",
+                filename: linkEl.download,
+                data,
+                mimeType: blob.type || "application/octet-stream",
+              });
+            });
+          } else if (linkEl.href.startsWith("data:")) {
+            const [header, base64Data] = linkEl.href.split(",");
+            const mimeMatch = header.match(/data:([^;]+)/);
+            const mimeType = mimeMatch ? mimeMatch[1] : "application/octet-stream";
+            const binaryString = atob(base64Data);
+            const data = Uint8Array.from(binaryString, (c) =>
+              c.charCodeAt(0),
+            ).buffer;
+            window.parent.postMessage({
+              type: "downloadFile",
+              filename: linkEl.download,
+              data,
+              mimeType,
+            });
+          } else {
+            let linkUrl;
+            try {
+              linkUrl = new URL(linkEl.href);
+            } catch (error) {
+              return;
+            }
+    
+            if (linkUrl.hostname === window.location.hostname) return;
+      
+            window.parent.postMessage({
+              type: 'openExternal',
+              href: linkEl.href,
+            }, '*');
+          }
+      });
+
+        const originalOpen = window.open;
+        window.open = function (url) {
+          window.parent.postMessage({
+            type: "openExternal",
+            href: url,
+          }, "*");
+        };
+
+        window.addEventListener('error', (event) => {
+          window.parent.postMessage({ type: 'console', message: 'Uncaught Error: ' + event.message }, '*');
+        });
+      })();
+    </script>
+  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>École 42 Self-Study Roadmap</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        
+        header {
+            border-bottom: 1px solid #334155;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.25rem;
+            background: linear-gradient(90deg, #60a5fa 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.125rem;
+            margin-bottom: 1rem;
+        }
+        
+        .badges {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .badge {
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            border: 1px solid;
+        }
+        
+        .badge-blue {
+            background: rgba(30, 58, 138, 0.4);
+            border-color: rgba(37, 99, 235, 0.6);
+        }
+        
+        .badge-amber {
+            background: rgba(92, 51, 23, 0.4);
+            border-color: rgba(217, 119, 6, 0.6);
+        }
+        
+        .badge-green {
+            background: rgba(20, 83, 45, 0.4);
+            border-color: rgba(34, 197, 94, 0.6);
+        }
+        
+        .phase-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tab-button {
+            padding: 0.75rem;
+            border: 1px solid #475569;
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .tab-button:hover {
+            border-color: #64748b;
+        }
+        
+        .tab-button.active {
+            background: #2563eb;
+            border-color: #60a5fa;
+        }
+        
+        .tab-label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        
+        .tab-duration {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        
+        .phase-content {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .phase-title {
+            font-size: 1.875rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .phase-intensity {
+            color: #fbbf24;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .project-item {
+            margin-bottom: 1rem;
+        }
+        
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(71, 85, 105, 0.3);
+            border: 1px solid #475569;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .project-header:hover {
+            background: rgba(71, 85, 105, 0.5);
+            border-color: #64748b;
+        }
+        
+        .project-left {
+            text-align: left;
+        }
+        
+        .project-name {
+            font-weight: 600;
+            color: #e2e8f0;
+        }
+        
+        .project-focus {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+        
+        .project-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .project-days {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+        }
+        
+        .chevron {
+            transition: transform 0.2s;
+            color: #94a3b8;
+        }
+        
+        .chevron.open {
+            transform: rotate(180deg);
+        }
+        
+        .project-detail {
+            margin-top: 0.5rem;
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            border-left: 2px solid #3b82f6;
+            border-radius: 0.375rem;
+            display: none;
+        }
+        
+        .project-detail.show {
+            display: block;
+        }
+        
+        .detail-text {
+            color: #cbd5e1;
+            margin-bottom: 0.75rem;
+        }
+        
+        .warning, .tip {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .warning {
+            color: #fcd34d;
+            background: rgba(146, 64, 14, 0.2);
+        }
+        
+        .tip {
+            color: #67e8f9;
+            background: rgba(12, 74, 110, 0.2);
+        }
+        
+        .reference-section {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .reference-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        .reference-grid {
+            max-height: 24rem;
+            overflow-y: auto;
+            space-y: 1rem;
+        }
+        
+        .reference-card {
+            background: rgba(71, 85, 105, 0.2);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #475569;
+            margin-bottom: 1rem;
+        }
+        
+        .reference-card-title {
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+        
+        .difficulty {
+            color: #fbbf24;
+        }
+        
+        .reference-card-text {
+            font-size: 0.875rem;
+            color: #cbd5e1;
+            space-y: 0.5rem;
+        }
+        
+        .reference-card-line {
+            margin-top: 0.5rem;
+        }
+        
+        .label {
+            color: #94a3b8;
+        }
+        
+        .rules-section {
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.3) 0%, rgba(120, 53, 15, 0.3) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+        }
+        
+        .rules-title {
+            font-size: 1.125rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .rules-list {
+            font-size: 0.875rem;
+            space-y: 0.5rem;
+        }
+        
+        .rules-list li {
+            margin-bottom: 0.5rem;
+            list-style: none;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .rules-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+        }
+    </style>
+</head>
+<body id="artifacts-component-root-html">
+    <div class="container">
+        <header>
+            <h1>École 42 Self-Study</h1>
+            <p class="subtitle">Complete roadmap. 12-18 months full-time. ~1200 hours.</p>
+            <div class="badges">
+                <div class="badge badge-blue">77 Blackhole days</div>
+                <div class="badge badge-amber">6 Exams to pass</div>
+                <div class="badge badge-green">20+ projects</div>
+            </div>
+        </header>
+
+        <div class="phase-tabs" id="phaseTabs"></div>
+
+        <div class="phase-content" id="phaseContent"></div>
+
+        <div class="reference-section">
+            <div class="reference-title">📚 Key Project Reference</div>
+            <div class="reference-grid" id="referenceGrid"></div>
+        </div>
+
+        <div class="rules-section">
+            <div class="rules-title">Non-negotiable Rules</div>
+            <ul class="rules-list">
+                <li>No tutorials. Use man pages, RFCs, official docs only.</li>
+                <li>No copy-paste. Every line is yours.</li>
+                <li>Compile with: gcc -Wall -Wextra -Werror</li>
+                <li>Test with: valgrind --leak-check=full</li>
+                <li>All code passes norminette (42's code style)</li>
+                <li>Zero crashes. Handle all edge cases.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const phases = [
+            {
+                id: 0,
+                name: "Phase 0: Setup",
+                duration: "Week 1",
+                projects: [
+                    { name: "Environment Setup", days: 2, focus: "Tools & Linux", details: "Linux (Ubuntu) or WSL2, install: gcc, make, git, vim, valgrind, gdb. Test each installation." },
+                    { name: "Git & Shell", days: 1, focus: "Version control", details: "Learn: init, add, commit, push, pull, branch, merge. Create first repo." },
+                    { name: "C Basics", days: 2, focus: "First programs", details: "Hello World in C. Study compilation flags -Wall -Wextra -Werror. Read man pages." },
+                    { name: "Community", days: 2, focus: "Network", details: "Join r/42Born2Code, find Discord server. Search GitHub for examples." }
+                ]
+            },
+            {
+                id: 1,
+                name: "Phase 1: C Piscine",
+                duration: "Weeks 2-5",
+                intensity: "60 hrs/week (8-10 hrs/day)",
+                projects: [
+                    { name: "Day 00-02", days: "2-3", focus: "Shell, git, C basics", details: "Shell commands (ls, cd, chmod), git workflows, first C programs with write() syscall." },
+                    { name: "Day 03", days: 3, focus: "POINTERS (critical!)", details: "ft_swap, ft_strlen, ft_putstr. Draw memory diagrams. Use gdb to watch pointers.", warning: "Don't memorize—understand pointers deeply or you'll struggle forever" },
+                    { name: "Day 04", days: 3, focus: "Recursion", details: "Factorial, fibonacci, power. Practice base cases. Understand stack frames." },
+                    { name: "Day 05", days: 3, focus: "Strings mastery", details: "strcpy, strcmp, strstr. 20+ exercises. Memorize ASCII table. Test NULL cases." },
+                    { name: "Day 06-07", days: "2-2", focus: "argv/malloc", details: "argc/argv, 2D arrays, malloc/free. Run valgrind on everything.", warning: "Run valgrind on every program: valgrind --leak-check=full ./program" },
+                    { name: "Final Projects", days: 3, focus: "Sastantua, BSQ", details: "Sastantua (complex patterns), BSQ (find largest square in map, optimize algorithm)" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Phase 2: Ring 0 & 1",
+                duration: "Months 2-4",
+                projects: [
+                    { name: "Libft", days: 21, focus: "Your C library foundation", details: "43 functions: is_*, str_*, mem_* functions (Part 1), utilities like split/itoa (Part 2), linked list functions (Bonus). Create libft.a.", tip: "Create comprehensive test suite. Test every edge case." },
+                    { name: "Born2beRoot", days: 7, focus: "Linux admin + VM setup", details: "VirtualBox/UTM, Debian, LVM encryption, SSH on 4242, UFW firewall, sudo config, PAM." },
+                    { name: "ft_printf", days: 14, focus: "Variadic functions", details: "Handle %c %s %p %d %i %u %x %X %%. Learn variadic args (va_start, va_arg).", tip: "Compare output byte-by-byte with real printf using test harness." },
+                    { name: "get_next_line", days: 14, focus: "File I/O + static vars", details: "Static variables to maintain state. Handle BUFFER_SIZE (1, 10, 1000, 10M). Multiple FDs.", warning: "Most tricky part—think about buffer management across calls." }
+                ]
+            },
+            {
+                id: 3,
+                name: "Phase 3: Ring 2",
+                duration: "Months 4-6",
+                projects: [
+                    { name: "Exam Rank 02", days: "prep", focus: "Prerequisite gate", details: "Practice 50+ exercises. Timed get_next_line variants, printf-like functions.", warning: "Mandatory gate. Study hard before attempting." },
+                    { name: "Pipex OR so_long OR FdF", days: 14, focus: "Choose one", details: "PIPEX: fork, pipe, execve. SO_LONG: 2D game (MinilibX). FDF: 3D wireframe." },
+                    { name: "push_swap", days: 14, focus: "Sorting optimization", details: "Radix sort or quick sort adaptation. 100 nums ≤700 ops, 500 nums ≤5500 ops.", warning: "Most fail on algorithm efficiency. Study sorting deeply." },
+                    { name: "Philosophers", days: 28, focus: "Threading + mutexes", details: "N philosophers, mutexes on forks. Prevent deadlock. Timestamps ±10ms.", warning: "Race conditions are subtle. Use valgrind --tool=helgrind." },
+                    { name: "Minishell (GROUP)", days: 14, focus: "Parser + execution", details: "Lexer→Parser→AST→Execution. Pipes, redirections, env vars, built-ins.", warning: "Memory management is complex. Every malloc needs tracking." }
+                ]
+            },
+            {
+                id: 4,
+                name: "Phase 4: Ring 3",
+                duration: "Months 7-9",
+                projects: [
+                    { name: "Exam Rank 03", days: "prep", focus: "Gate requirement", details: "C-focused exam. Practice complex string/memory problems." },
+                    { name: "NetPractice", days: 21, focus: "Networking theory", details: "10 levels of network config. IPv4, subnetting, CIDR, routing tables.", tip: "Pure theory. Practice binary/decimal conversion until automatic." },
+                    { name: "Cub3D OR miniRT", days: 21, focus: "Choose: raycasting or raytracing", details: "CUB3D: Raycasting (like Wolfenstein 3D). MINIRT: Raytracing, 3D shapes, lighting.", tip: "Vector math is essential." },
+                    { name: "C++ Modules 00-04", days: 35, focus: "OOP fundamentals", details: "5 modules: Basics, Memory, Operator overload, Inheritance, Polymorphism." }
+                ]
+            },
+            {
+                id: 5,
+                name: "Phase 5: Ring 4",
+                duration: "Months 10-12",
+                projects: [
+                    { name: "Exam Rank 04", days: "prep", focus: "C++ focused", details: "C++ concepts: templates, STL, casting, exceptions." },
+                    { name: "C++ Modules 05-09", days: 70, focus: "Advanced C++", details: "Modules 5-9: Exceptions, casts, templates, STL containers, algorithms." },
+                    { name: "ft_irc OR webserv", days: 56, focus: "Choose: IRC or HTTP server", details: "FT_IRC: RFC 1459, channels, auth. WEBSERV: HTTP/1.1, CGI, config parsing." },
+                    { name: "Inception (GROUP)", days: 21, focus: "Docker infrastructure", details: "Docker Compose, NGINX+TLS, WordPress+php-fpm, MariaDB, volumes, networks." }
+                ]
+            },
+            {
+                id: 6,
+                name: "Phase 6: Final Project",
+                duration: "Months 13-15",
+                projects: [
+                    { name: "Exam Rank 05", days: "prep", focus: "Before final project", details: "Comprehensive exam covering systems, networking, C++." },
+                    { name: "ft_transcendence", days: 28, focus: "Full-stack capstone", details: "Full-stack multiplayer Pong game (3-5 person team). SPA, backend, PostgreSQL, OAuth, chat." },
+                    { name: "Exam Rank 06", days: "final", focus: "Comprehensive final", details: "Final comprehensive exam covering everything." }
+                ]
+            }
+        ];
+
+        const referenceProjects = [
+            {
+                name: "Libft",
+                difficulty: "⭐⭐",
+                timeline: "W1: Part 1 (23 func). W2: Part 2 (11 func). W3: Bonus + testing.",
+                tip: "Create test suite early. Test every edge case before moving on.",
+                mistakes: "Not handling NULL, assuming null-termination, memory leaks in ft_split."
+            },
+            {
+                name: "ft_printf",
+                difficulty: "⭐⭐",
+                timeline: "D1-7: Core logic. D8-10: All conversions. D11-14: Edge cases.",
+                tip: "Build test harness comparing output with real printf.",
+                mistakes: "Width/precision flags, pointer formatting, wrong return value."
+            },
+            {
+                name: "get_next_line",
+                difficulty: "⭐⭐⭐",
+                timeline: "D1-5: Understand buffer. D6-10: Core. D11-14: Multiple FDs.",
+                tip: "Test with BUFFER_SIZE: 1, 42, 10000. Most failures = buffer edge cases.",
+                mistakes: "End-of-file handling, buffer overflow, leaks with multiple FDs."
+            },
+            {
+                name: "push_swap",
+                difficulty: "⭐⭐⭐⭐",
+                timeline: "D1-3: Study algorithms. D4-10: Implement. D11-14: Optimize.",
+                tip: "Study sorting algorithms first. Radix sort is typical.",
+                mistakes: "Not reaching op limits, inefficient algorithm, poor data structures."
+            },
+            {
+                name: "Philosophers",
+                difficulty: "⭐⭐⭐⭐",
+                timeline: "D1-5: Understand threading. D6-15: Implementation. D16-28: Edge cases.",
+                tip: "Use helgrind (valgrind tool) to detect race conditions.",
+                mistakes: "Deadlock, data races, timing inaccuracies, starvation."
+            },
+            {
+                name: "Minishell",
+                difficulty: "⭐⭐⭐⭐⭐",
+                timeline: "D1-3: Design. D4-8: Lexer. D9-12: Parser. D13-14: Executor.",
+                tip: "Start with clean architecture. Lexer→Parser→AST→Executor.",
+                mistakes: "Incomplete parsing, wrong pipe logic, fd leaks, memory everywhere."
+            }
+        ];
+
+        let currentPhase = 0;
+
+        function renderPhases() {
+            const container = document.getElementById('phaseTabs');
+            container.innerHTML = phases.map((phase, idx) => `
+                <button class="tab-button ${idx === 0 ? 'active' : ''}" onclick="switchPhase(${idx})">
+                    <span class="tab-label">${phase.name.split(':')[0]}</span>
+                    <span class="tab-duration">${phase.duration}</span>
+                </button>
+            `).join('');
+        }
+
+        function switchPhase(idx) {
+            currentPhase = idx;
+            document.querySelectorAll('.tab-button').forEach((btn, i) => {
+                btn.classList.toggle('active', i === idx);
+            });
+            renderPhaseContent();
+        }
+
+        function renderPhaseContent() {
+            const phase = phases[currentPhase];
+            const content = document.getElementById('phaseContent');
+            
+            let html = `<div class="phase-title">${phase.name}</div>`;
+            if (phase.intensity) {
+                html += `<div class="phase-intensity">⚡ ${phase.intensity}</div>`;
+            }
+            
+            html += phase.projects.map((proj, i) => `
+                <div class="project-item">
+                    <div class="project-header" onclick="toggleProject(${currentPhase}, ${i})">
+                        <div class="project-left">
+                            <div class="project-name">${proj.name}</div>
+                            <div class="project-focus">${proj.focus}</div>
+                        </div>
+                        <div class="project-right">
+                            <span class="project-days">${proj.days} ${typeof proj.days === 'number' ? 'days' : ''}</span>
+                            <span class="chevron" id="chevron-${currentPhase}-${i}">▼</span>
+                        </div>
+                    </div>
+                    <div class="project-detail" id="detail-${currentPhase}-${i}">
+                        <div class="detail-text">${proj.details}</div>
+                        ${proj.warning ? `<div class="warning">⚠️ ${proj.warning}</div>` : ''}
+                        ${proj.tip ? `<div class="tip">💡 ${proj.tip}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            content.innerHTML = html;
+        }
+
+        function toggleProject(phaseIdx, projIdx) {
+            const detail = document.getElementById(`detail-${phaseIdx}-${projIdx}`);
+            const chevron = document.getElementById(`chevron-${phaseIdx}-${projIdx}`);
+            detail.classList.toggle('show');
+            chevron.classList.toggle('open');
+        }
+
+        function renderReference() {
+            const grid = document.getElementById('referenceGrid');
+            grid.innerHTML = referenceProjects.map(proj => `
+                <div class="reference-card">
+                    <div class="reference-card-title">
+                        <span>${proj.name}</span>
+                        <span class="difficulty">${proj.difficulty}</span>
+                    </div>
+                    <div class="reference-card-text">
+                        <div class="reference-card-line"><span class="label">Timeline:</span> ${proj.timeline}</div>
+                        <div class="reference-card-line"><span class="label">Tip:</span> ${proj.tip}</div>
+                        <div class="reference-card-line"><span class="label">Mistakes:</span> ${proj.mistakes}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderPhases();
+        renderPhaseContent();
+        renderReference();
+    </script>
+</body>
+</html>

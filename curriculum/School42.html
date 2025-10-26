@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School 42 Complete Roadmap - Detailed Exercises</title>
+    <style>
+        @media print {
+            body { margin: 0; padding: 15mm; }
+            .page-break { page-break-before: always; }
+            a { color: #000; }
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+        }
+        
+        .cover {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 40px;
+        }
+        
+        .cover h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            background: #3498db;
+            color: white;
+            padding: 15px 20px;
+            margin: 30px 0 20px 0;
+            border-radius: 5px;
+        }
+        
+        h3 {
+            color: #2c3e50;
+            margin: 25px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .exercise-box {
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .what-to-do {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .resources {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .deadline {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+        
+        .difficulty {
+            background: #27ae60;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        
+        pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        
+        .link-box {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .link-box a {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        
+        ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="cover">
+        <h1>SCHOOL 42</h1>
+        <p style="font-size: 28px; margin: 20px 0;">Complete Roadmap with Detailed Exercises</p>
+        <p style="font-size: 18px;">Self-Study Edition - Everything You Need</p>
+    </div>
+
+    <div class="link-box">
+        <h3 style="margin-top: 0; border: none;">🔗 Essential Resources - Bookmark These!</h3>
+        <ul>
+            <li><a href="https://github.com/Ian-Orwel/42-Cursus-Subjects" target="_blank">Official Project PDFs</a></li>
+            <li><a href="https://github.com/samuelkarani/42-piscine-c" target="_blank">Piscine Overview</a></li>
+            <li><strong>Reddit:</strong> r/42Born2Code</li>
+            <li><strong>Discord:</strong> Search "42 school discord"</li>
+            <li><strong>Testers:</strong> Search GitHub for "[project_name] tester"</li>
+        </ul>
+    </div>
+
+    <h2>📚 USING THIS ROADMAP</h2>
+    <ol>
+        <li>Download project PDFs from Ian-Orwel repository</li>
+        <li>Read "What to Code" sections carefully</li>
+        <li>Code WITHOUT looking at solutions</li>
+        <li>Test with valgrind and norminette</li>
+        <li>Use GitHub testers to verify</li>
+        <li>Join communities when stuck</li>
+    </ol>
+
+    <h2 class="page-break">🏊 THE C PISCINE - Key Projects Only</h2>
+    <p><strong>Note:</strong> Complete piscine details in official PDFs. Here are the most important exercises:</p>
+
+    <h3>Week 1: Shell & C Basics (Days 00-02)</h3>
+    <div class="exercise-box">
+        <strong>Day 00:</strong> Shell commands, git basics<br>
+        <strong>Day 01:</strong> Shell scripts, text processing<br>
+        <strong>Day 02:</strong> First C programs - printing, loops, conditionals
+    </div>
+
+    <h3>Week 2-3: Core C (Days 03-07)</h3>
+    <div class="exercise-box">
+        <strong>Day 03:</strong> POINTERS (most important!) - ft_swap, ft_strlen, ft_putstr<br>
+        <strong>Day 04:</strong> Recursion - factorial, fibonacci, power<br>
+        <strong>Day 05:</strong> Strings - strcpy, strcmp, strstr (20 exercises)<br>
+        <strong>Day 06:</strong> argc/argv - command line arguments<br>
+        <strong>Day 07:</strong> malloc/free - CRITICAL for memory management
+    </div>
+
+    <h3>Week 4: Advanced (Days 08-13)</h3>
+    <div class="exercise-box">
+        <strong>Day 08:</strong> Makefiles and libraries<br>
+        <strong>Day 11:</strong> Linked lists<br>
+        <strong>Day 13:</strong> Binary search trees
+    </div>
+
+    <div class="link-box">
+        <strong>Find Piscine Exercises:</strong><br>
+        Search GitHub: "42 piscine C day [number]" to find exact exercise descriptions
+    </div>
+
+    <h2 class="page-break">📦 COMMON CORE PROJECTS - DETAILED</h2>
+
+    <h3>PROJECT 1: Libft (21 days)</h3>
+    <div class="link-box">
+        <a href="https://github.com/Ian-Orwel/42-Cursus-Subjects/tree/main/Cursus/libft" target="_blank">Official Subject PDF</a>
+    </div>
+
+    <div class="what-to-do">
+        <strong>What to Code: 43 Functions Total</strong>
+        <p><strong>Part 1 (23 functions):</strong> Recreate standard C library functions</p>
+        <ul>
+            <li>ft_isalpha, ft_isdigit, ft_isalnum, ft_isascii, ft_isprint</li>
+            <li>ft_strlen, ft_memset, ft_bzero, ft_memcpy, ft_memmove</li>
+            <li>ft_strlcpy, ft_strlcat, ft_toupper, ft_tolower</li>
+            <li>ft_strchr, ft_strrchr, ft_strncmp, ft_memchr, ft_memcmp</li>
+            <li>ft_strnstr, ft_atoi, ft_calloc, ft_strdup</li>
+        </ul>
+
+        <p><strong>Part 2 (11 functions):</strong> Additional utilities</p>
+        <ul>
+            <li>ft_substr, ft_strjoin, ft_strtrim, ft_split</li>
+            <li>ft_itoa, ft_strmapi, ft_striteri</li>
+            <li>ft_putchar_fd, ft_putstr_fd, ft_putendl_fd, ft_putnbr_fd</li>
+        </ul>
+
+        <p><strong>Bonus (9 functions):</strong> Linked list functions</p>
+        <ul>
+            <li>ft_lstnew, ft_lstadd_front, ft_lstsize, ft_lstlast</li>
+            <li>ft_lstadd_back, ft_lstdelone, ft_lstclear, ft_lstiter, ft_lstmap</li>
+        </ul>
+    </div>
+
+    <div class="resources">
+        <strong>Testing:</strong> Search GitHub for "libft tester" or "Tripouille libftTester"
+    </div>
+
+    <h3 class="page-break">PROJECT 2: ft_printf (14 days)</h3>
+    <div class="link-box">
+        <a href="https://github.com/Ian-Orwel/42-Cursus-Subjects/tree/main/Cursus/ft_printf" target="_blank">Official Subject PDF</a>
+    </div>
+
+    <div class="what-to-do">
+        <strong>What to Code:</strong> Recreate printf with these conversions:<br>
+        %c (char), %s (string), %p (pointer), %d/%i (int), %u (unsigned), %x/%X (hex), %% (percent)
+    </div>
+
+    <h3>PROJECT 3: get_next_line (14 days)</h3>
+    <div class="link-box">
+        <a href="https://github.com/Ian-Orwel/42-Cursus-Subjects/tree/main/Cursus/get_next_line" target="_blank">Official Subject PDF</a>
+    </div>
+
+    <div class="what-to-do">
+        <strong>What to Code:</strong> Function that reads file line by line<br>
+        <strong>Key concept:</strong> Static variables to store state between calls
+    </div>
+
+    <h3>PROJECT 4: push_swap (14 days)</h3>
+    <div class="what-to-do">
+        <strong>What to Code:</strong> Sort numbers using two stacks with limited operations<br>
+        <strong>Challenge:</strong> Sort 100 numbers in ≤700 operations, 500 numbers in ≤5500 operations
+    </div>
+
+    <h3>PROJECT 5: Philosophers (28 days)</h3>
+    <div class="what-to-do">
+        <strong>What to Code:</strong> Dining philosophers problem with threads and mutexes<br>
+        <strong>Learn:</strong> Multithreading, race conditions, deadlock prevention
+    </div>
+
+    <h3>PROJECT 6: Minishell (14 days, GROUP)</h3>
+    <div class="what-to-do">
+        <strong>What to Code:</strong> Your own shell (like bash)<br>
+        <strong>Features:</strong> Pipes, redirections, environment variables, built-ins (echo, cd, pwd, export, unset, env, exit)
+    </div>
+
+    <h2 class="page-break">🏠 SELF-STUDY STRATEGIES</h2>
+
+    <h3>1. Accountability System</h3>
+    <div class="exercise-box">
+        <ul>
+            <li>Post daily progress in r/42Born2Code</li>
+            <li>Find accountability partner on Discord</li>
+            <li>Track GitHub contribution graph</li>
+            <li>Create public commitment (blog, Twitter)</li>
+        </ul>
+    </div>
+
+    <h3>2. When You're Stuck (48-Hour Rule)</h3>
+    <div class="exercise-box">
+        <strong>Hours 0-2:</strong> Try solving yourself<br>
+        <strong>Hours 2-6:</strong> Debug with gdb, add prints, draw on paper<br>
+        <strong>Hours 6-12:</strong> Research the concept (not solution!)<br>
+        <strong>Hours 12-24:</strong> Take break, sleep on it<br>
+        <strong>Hours 24-48:</strong> Start from scratch<br>
+        <strong>After 48h:</strong> Ask for help (concepts, not solutions)
+    </div>
+
+    <h3>3. Debugging Tools</h3>
+    <div class="exercise-box">
+        <strong>GDB:</strong>
+        <pre>gcc -g program.c -o program
+gdb ./program
+break main
+run
+next
+print variable
+backtrace</pre>
+
+        <strong>Valgrind:</strong>
+        <pre>valgrind --leak-check=full ./program</pre>
+    </div>
+
+    <h3>4. Mental Health</h3>
+    <div class="exercise-box">
+        <ul>
+            <li><strong>Work in sprints:</strong> 50min work, 10min break</li>
+            <li><strong>Take days off:</strong> Minimum 1 day/week</li>
+            <li><strong>Exercise regularly:</strong> Coding is sedentary</li>
+            <li><strong>Sleep 7-8 hours:</strong> Brain consolidates during sleep</li>
+            <li><strong>Celebrate small wins:</strong> Each working function is progress</li>
+        </ul>
+    </div>
+
+    <h3>5. Progress Tracking</h3>
+    <div class="exercise-box">
+        <strong>Create a tracking document:</strong>
+        <pre>42 School Progress
+==================
+Start Date: [DATE]
+Projects Completed: [X/20]
+
+Daily Log:
+2025-10-15: Completed ft_strlen, stuck on ft_split
+2025-10-16: Fixed ft_split! Learned 2D array malloc
+
+Weekly Review (Every Sunday):
+- What did I learn?
+- What was hardest?
+- What's next week's goal?</pre>
+    </div>
+
+    <h3>6. Building Your Portfolio</h3>
+    <div class="exercise-box">
+        <strong>Since you won't have official certificate:</strong>
+        <ul>
+            <li>Keep all projects in public GitHub repos</li>
+            <li>Write excellent README files with demos</li>
+            <li>Create portfolio website showcasing projects</li>
+            <li>LinkedIn: "Self-studied École 42 curriculum (1200+ coding hours)"</li>
+            <li>Blog about your journey and learnings</li>
+        </ul>
+    </div>
+
+    <h3>7. Study Techniques</h3>
+    <div class="exercise-box">
+        <strong>Active Recall:</strong> Close docs, write from memory<br>
+        <strong>Spaced Repetition:</strong> Review concepts on Day 5, 10, 20, 40<br>
+        <strong>Feynman Technique:</strong> Explain concepts simply (as if to 10-year-old)<br>
+        <strong>Learn by Teaching:</strong> Answer questions on Reddit/Discord
+    </div>
+
+    <h3>8. Time Management</h3>
+    <div class="exercise-box">
+        <strong>Full-Time (40+ hrs/week):</strong>
+        <pre>Monday-Friday:
+09:00-13:00  Deep work (hardest problems)
+14:00-18:00  Implementation
+19:00-21:00  Testing, cleanup
+
+Weekends:
+Saturday: Catch-up or get ahead (4-6 hours)
+Sunday: REST or light study</pre>
+
+        <strong>Part-Time (20-25 hrs/week):</strong>
+        <pre>Weekday Evenings: 2-3 hours (15 hrs/week)
+Weekends: 5-6 hours each day (10 hrs/week)</pre>
+    </div>
+
+    <h3>9. Emergency Motivation</h3>
+    <div class="exercise-box">
+        <strong>When you want to quit:</strong>
+        <ol>
+            <li><strong>"Just 5 minutes" rule:</strong> Start for 5min, usually continue</li>
+            <li><strong>Remember your WHY:</strong> Why did you start this?</li>
+            <li><strong>Look at success stories:</strong> Others did it, so can you</li>
+            <li><strong>Break it down:</strong> Just write one function today</li>
+            <li><strong>Nuclear option:</strong> Stop completely for 48h, come back fresh</li>
+        </ol>
+    </div>
+
+    <h3>10. Recommended Resources</h3>
+    <div class="resources">
+        <strong>Books:</strong>
+        <ul>
+            <li>"The C Programming Language" by K&R</li>
+            <li>"Computer Systems: A Programmer's Perspective"</li>
+        </ul>
+
+        <strong>Videos (for concepts only!):</strong>
+        <ul>
+            <li>CS50 by Harvard</li>
+            <li>Jacob Sorber (YouTube)</li>
+            <li>CodeVault (YouTube)</li>
+        </ul>
+
+        <strong>⚠️ Use for understanding concepts, NEVER copy code!</strong>
+    </div>
+
+    <h2 class="page-break">📋 QUICK REFERENCE: All Projects</h2>
+
+    <table>
+        <tr>
+            <th>Project</th>
+            <th>Days</th>
+            <th>What You Build</th>
+        </tr>
+        <tr>
+            <td>Libft</td>
+            <td>21</td>
+            <td>Your C library (43 functions)</td>
+        </tr>
+        <tr>
+            <td>Born2beRoot</td>
+            <td>7</td>
+            <td>VM with Debian</td>
+        </tr>
+        <tr>
+            <td>ft_printf</td>
+            <td>14</td>
+            <td>Printf function</td>
+        </tr>
+        <tr>
+            <td>get_next_line</td>
+            <td>14</td>
+            <td>File reader (line by line)</td>
+        </tr>
+        <tr>
+            <td>push_swap</td>
+            <td>14</td>
+            <td>Sorting with stacks</td>
+        </tr>
+        <tr>
+            <td>Philosophers</td>
+            <td>28</td>
+            <td>Threading simulation</td>
+        </tr>
+        <tr>
+            <td>Minishell</td>
+            <td>14</td>
+            <td>Your own shell</td>
+        </tr>
+        <tr>
+            <td>Cub3D/miniRT</td>
+            <td>21</td>
+            <td>3D graphics</td>
+        </tr>
+        <tr>
+            <td>C++ Modules</td>
+            <td>50+</td>
+            <td>10 C++ projects</td>
+        </tr>
+        <tr>
+            <td>ft_irc/webserv</td>
+            <td>56</td>
+            <td>Server programming</td>
+        </tr>
+        <tr>
+            <td>Inception</td>
+            <td>21</td>
+            <td>Docker infrastructure</td>
+        </tr>
+        <tr>
+            <td>ft_transcendence</td>
+            <td>28</td>
+            <td>Full-stack web app</td>
+        </tr>
+    </table>
+
+    <h2 class="page-break">✅ START HERE - ACTION STEPS</h2>
+
+    <div class="exercise-box">
+        <h3>Week 1: Setup</h3>
+        <ol>
+            <li>Install Linux (Ubuntu) or WSL2</li>
+            <li>Install tools: <code>sudo apt install build-essential gcc make git vim valgrind gdb</code></li>
+            <li>Install norminette: <code>pip install norminette</code></li>
+            <li>Create GitHub account</li>
+            <li>Bookmark: <a href="https://github.com/Ian-Orwel/42-Cursus-Subjects">github.com/Ian-Orwel/42-Cursus-Subjects</a></li>
+            <li>Join r/42Born2Code and Discord</li>
+        </ol>
+    </div>
+
+    <div class="exercise-box">
+        <h3>Weeks 2-5: C Piscine</h3>
+        <ol>
+            <li>Search GitHub: "42 piscine C day 00"</li>
+            <li>Read exercise descriptions</li>
+            <li>Code solutions (no copying!)</li>
+            <li>Test with norminette</li>
+            <li>Move to next day</li>
+        </ol>
+    </div>
+
+    <div class="exercise-box">
+        <h3>Month 2+: Common Core</h3>
+        <ol>
+            <li>Download project PDF from Ian-Orwel repo</li>
+            <li>Read PDF 2-3 times carefully</li>
+            <li>Plan approach on paper</li>
+            <li>Code incrementally, test each function</li>
+            <li>Use valgrind always</li>
+            <li>Search GitHub for testers</li>
+            <li>Fix bugs and optimize</li>
+            <li>Move to next project</li>
+        </ol>
+    </div>
+
+    <div style="text-align: center; margin: 60px 0; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px;">
+        <h2 style="color: white; border: none;">🚀 You Have Everything You Need</h2>
+        <p style="font-size: 20px; margin: 20px 0;">
+            ✅ Exact project requirements<br>
+            ✅ Links to official subjects<br>
+            ✅ Self-study strategies<br>
+            ✅ Mental health tips<br>
+            ✅ Testing resources<br>
+            ✅ Communities to join
+        </p>
+        <p style="font-size: 24px; font-weight: bold; margin: 30px 0;">Now Close This PDF and START CODING</p>
+        <p style="font-size: 18px;">Day 1 begins NOW. 🎯</p>
+    </div>
+
+    <div style="padding: 40px; background: #f8f9fa; border-radius: 10px; margin: 40px 0;">
+        <h3 style="text-align: center; margin-top: 0;">📌 Print and Put On Your Wall</h3>
+        <div style="font-size: 20px; text-align: center; padding: 20px; background: white; border: 3px solid #3498db; margin: 20px 0;">
+            <p style="font-weight: bold; margin: 10px 0;">"I will not quit when it's hard."</p>
+            <p style="font-weight: bold; margin: 10px 0;">"I will not compare my progress to others."</p>
+            <p style="font-weight: bold; margin: 10px 0;">"I will code every single day."</p>
+            <p style="font-weight: bold; margin: 10px 0;">"I will finish what I started."</p>
+            <p style="font-weight: bold; margin: 30px 0 10px 0; font-size: 24px; color: #3498db;">I am becoming exceptional.</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 20px; background: #ecf0f1; border-radius: 8px;">
+        <p style="font-size: 14px; color: #7f8c8d;">Press Ctrl+P (Cmd+P on Mac) to print or save as PDF</p>
+        <p style="font-size: 12px; color: #95a5a6; margin-top: 10px;">Self-Study Edition - Complete Guide</p>
+    </div>
+
+</body>
+</html>
