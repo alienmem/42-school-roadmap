@@ -1,0 +1,31 @@
+
+# macOS system files
+.DS_Store
+
+# Editor/IDE files
+*.swp
+*.swo
+*.tmp
+*.bak
+*.orig
+.vscode/
+.idea/
+
+# Build artifacts
+*.o
+*.out
+*.exe
+*.obj
+*.class
+
+# Logs
+*.log
+
+# Python cache (if you ever add Python projects)
+__pycache__/
+*.py[cod]
+
+# Node.js / JS (if any future projects)
+node_modules/
+dist/
+build/
