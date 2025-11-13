@@ -1,0 +1,39 @@
+# Create the files 
+touch test{1,3,4,5}
+
+# Create the directories
+mkdir test{0,2}
+
+# Change size of files
+truncate -s 4 test1
+truncate -s 1 test3
+truncate -s 2 test4
+
+# Create a hard link
+ln -f test3 test5  -> forced because test5 already exists.
+
+# Change timestamps
+touch -t 202506012047 test0
+touch -t 202506012146 test1
+touch -t 202506012245 test2
+touch -t 202506012344 test3
+touch -t 202506012343 test4
+
+# Change to the required permissions
+chmod 715 test0
+chmod 714 test1
+chmod 504 test2
+chmod 404 test3
+chmod 641 test4
+chmod 404 test5
+
+# Create symlink test6 pointing to test0
+ln -sf test0 test6
+
+# Change the timestamp of symlink
+touch -ht 202506012220 test6
+
+# Change the permissions of symlink (not the target) 
+chmod 777 test6
+
+

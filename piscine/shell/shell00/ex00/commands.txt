@@ -1,0 +1,5 @@
+
+
+# Create a file that prints "Z" when displayed with cat
+echo "Z" > z
+

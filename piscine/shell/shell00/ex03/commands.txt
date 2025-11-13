@@ -1,0 +1,3 @@
+
+# Create your own SSH key names id_rsa_pub(then just follow the prompts)
+ssh-keygen          

@@ -1,0 +1,10 @@
+
+# Create the file and set its timestamp
+touch -t 202506012342 testShell00
+
+# Apply correct permissions (-r--r-xr-x)
+chmod 455 testShell00
+
+# Create the requested file
+tar -cf testShell00.tar testShell00
+

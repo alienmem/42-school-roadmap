@@ -1,0 +1,6 @@
+
+# List all non-hidden files and directories in the current directory,
+# separated by a comma and a space, sorted by modification time.
+# Directory names should end with a '/' character.
+
+ls -ptm

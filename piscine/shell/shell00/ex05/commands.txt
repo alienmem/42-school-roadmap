@@ -1,0 +1,11 @@
+
+# Create a shell script that displays the ids of the last 5 commits of your git
+repository.
+
+
+# Create the file
+touch git_commit.sh
+
+
+git log -n5 --pretty=format:"%H"
+read man git

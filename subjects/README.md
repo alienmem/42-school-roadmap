@@ -1,3 +1,41 @@
+# Project Subjects 📚
+
+> **Note**: This folder contains official 42 School project subjects for reference. I'm currently completing the **Piscine** (self-study) and will begin these Core Curriculum projects starting **February 2025**.
+
+**My Status**: 🔄 Piscine Phase (Nov 2024 - Jan 2025)  
+**Next Phase**: Core Curriculum Projects (Feb 2025+)  
+**Current Focus**: [Shell & C Piscine Exercises](../piscine/)
+
+---
+
+## 🎯 My Learning Path
+
+```
+Piscine (Now) → Rank 00-01 (Feb-Apr 2025) → Rank 02-03 (May-Jul 2025) → Beyond
+```
+
+**Why these subjects are here now**: Planning ahead and understanding how the Piscine connects to future projects keeps me motivated and focused on fundamentals.
+
+---
+
+## 📂 How I'm Using This Folder
+
+✅ **Reference only** - Reading subjects to understand what's coming  
+✅ **No implementations yet** - Actual code goes in `/projects/` (future)  
+✅ **Organized by rank** - Following official 42 curriculum structure  
+✅ **Planning tool** - Mapping out my learning progression  
+
+---
+
+## 🔗 Quick Navigation
+
+- [← Back to Main README](../)
+- [📊 My Progress Tracker](../PROGRESS.md)
+- [🏊 Piscine (Current Focus)](../piscine/)
+- [📝 Future Projects](../projects/) *(coming Feb 2025)*
+
+---
+
 # Welcome to the 42 School Curriculum Repository! 🚀
 
 This folder (`subjects/`) contains all the **official 42 School project subjects**, organized by rank and module.  
@@ -66,32 +104,37 @@ So, grab a cup of coffee ☕, find a comfy spot, and start exploring the subject
 |---------|-------------|------------|----------------------|
 | Ft_transcendence | [🇬🇧 en.subject.pdf](./Cursus/ft_transcendence/en.subject.pdf) | [🇫🇷 fr.subject.pdf](./Cursus/ft_transcendence/fr.subject.pdf) | N/A |
 
-### Additional Learning Resources
+---
 
-For a comprehensive understanding of project requirements, the [42-Evals](https://github.com/rphlr/42-Evals) repository is an invaluable resource. It contains official evaluation sheets for 42 School projects that complement the materials found here. You can also view these resources through my [GitHub Pages](https://rphlr.github.io/42-Evals).
+## 🎓 My Project Roadmap
 
-Remember, this repository is constantly evolving, and I welcome your contributions to keep it up-to-date. If you find a project PDF missing or want to add an other language version, don't hesitate to open a pull request!
+**Phase 1: Foundation (Feb-Apr 2025)**
+- [ ] Rank 00: Libft (my own C library)
+- [ ] Rank 01: ft_printf, get_next_line, born2beroot
 
-Happy learning, and may your code compile smoothly on the first try! 🎉
+**Phase 2: Growth (May-Jul 2025)**
+- [ ] Rank 02: push_swap, so_long/pipex (choose path)
+- [ ] Rank 03: minishell or philosophers
 
-<b>Funny Stats 📊</b>
-
-  **Last stargazer:**
-
-  <!--last_stargazer_start-->
-[![Last Stargazer](https://avatars.githubusercontent.com/u/58217032?v=4&s=250)](https://github.com/fidwig)
-<!--last_stargazer_end-->
-  
-  Thanks to <!--name_start-->[fidwig](https://github.com/fidwig)<!--name_end--> for starring the repository! 🎉
-
-  **Updates occur daily. Last update :** <!--date_start-->25.02.2024, 02:20:10<!--date_end--> (CET)
-
-[![Star History Chart](https://api.star-history.com/svg?repos=rphlr/42-Subjects&type=Date)](https://star-history.com/#rphlr/42-Subjects&Date)
-
-  More stats are coming soon! 🤖
+**Phase 3: Specialization (Aug 2025+)**
+- [ ] Rank 04-05: C++ modules, advanced projects
+- [ ] Rank 06: ft_transcendence (final project)
 
 ---
 
-### Support the Repository
+## 📚 Additional Learning Resources
 
-If you find this repository useful, please consider giving it a star on GitHub. This helps increase its visibility and supports the community in finding these resources more easily. Thank you for your support! 🙏
+For a comprehensive understanding of project requirements, the [42-Evals](https://github.com/rphlr/42-Evals) repository is an invaluable resource. It contains official evaluation sheets for 42 School projects that complement the materials found here. You can also view these resources through [GitHub Pages](https://rphlr.github.io/42-Evals).
+
+---
+
+## 🙏 Credits
+
+**Original Repository**: This subjects folder is sourced from [rphlr/42-Subjects](https://github.com/rphlr/42-Subjects)  
+**Maintained by**: [@rphlr](https://github.com/rphlr)  
+**My Adaptation**: Added personal learning context and navigation for self-study journey
+
+---
+
+*Last updated: November 13, 2024*
+
