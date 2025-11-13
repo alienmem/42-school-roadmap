@@ -6,6 +6,5 @@ repository.
 # Create the file
 touch git_commit.sh
 
-
+# Add the command
 git log -n5 --pretty=format:"%H"
-read man git
