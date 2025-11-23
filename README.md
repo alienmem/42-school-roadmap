@@ -1,37 +1,56 @@
-# 42 School Self-Study Journey 🚀
+# École 42 Self-Study Journey
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+![C](https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white)
+![Unix](https://img.shields.io/badge/Unix-000000?style=for-the-badge&logo=linux&logoColor=white)
+![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)
 
-> Self-studying School 42's legendary C programming curriculum to build unshakeable fundamentals from the ground up.
+Self-studying École 42's legendary C programming curriculum to build unshakeable fundamentals from the ground up.
 
-**Started**: November 1, 2024  
-**Current**: Piscine (Shell & C exercises)  
-**Status**: Active Learning  
-**Available**: May 2025 (Connecticut, USA)
+**Started:** November 1, 2024  
+**Current Phase:** C Piscine (Shell & C exercises)  
+**Status:** Active Learning  
+**Goal:** Master systems programming fundamentals
+
+---
+
+## 🎯 What is École 42?
+
+École 42 is a peer-to-peer programming school with **no teachers, no lectures, just projects**. Students learn by solving increasingly complex problems, reviewing each other's code, and collaborating.
+
+**42's Philosophy:**
+- Learn by doing, not by listening
+- Peer-to-peer evaluation
+- Project-based curriculum
+- Focus on C and Unix fundamentals
+- Build problem-solving resilience
+
+**Why I'm self-studying it:**  
+To build a **bulletproof foundation** in systems programming before moving to high-level languages and frameworks.
 
 ---
 
 ## 👨‍💻 About Me
 
-I'm **Antonio Cardoso**, a mathematics graduate transitioning to software engineering through a **fundamentals-first approach**. Rather than jumping straight into frameworks, I'm building from the ground up by self-studying the School42 curriculum.
+I'm **Antonio Cardoso**, a mathematics graduate building toward a software engineering career through a **fundamentals-first approach**.
 
-**Background**:
-- 🎓 B.S. in Pure Mathematics
-- ✅ Harvard CS50-SQL (Completed)
-- ✅ Cisco C Programming Essential I (Completed)
-- 🔄 Professional Computer Programming Certification (IEFP Portugal, in progress)
+**Background:**
+- 🎓 B.S. in Mathematics (logic, proofs, abstract reasoning)
+- ✅ Harvard CS50-SQL (databases)
+- ✅ Cisco C Programming Essentials
+- 🔄 IEFP Level 4 Programming Certification (Portugal)
+- ✈️ Relocating to Connecticut, USA (June 2026)
 
-**Philosophy**: 
-> *"Master C, and everything else becomes easier."*
+**Philosophy:**
+> *"Master C, pointers, and memory—everything else becomes easier."*
 
-By understanding pointers, memory management, and how computers work at a low level, high-level languages like Python and JavaScript become tools I wield with deep comprehension, not just syntax I memorize.
+Understanding how computers work at the lowest level makes Python, JavaScript, and frameworks **tools I wield with comprehension**, not just syntax I memorize.
 
 ---
 
 ## 🗂️ Repository Structure
 ```
 42-school-roadmap/
-├── README.md              # You are here
+├── README.md              # Project overview (you are here)
 ├── PROGRESS.md            # Detailed progress tracking
 │
 ├── piscine/               # 42 Piscine exercises (current focus)
@@ -39,165 +58,191 @@ By understanding pointers, memory management, and how computers work at a low le
 │   ├── c/                 # C00-C13: C programming modules
 │   ├── rush/              # Rush00-02: Team weekend projects
 │   ├── exams/             # Practice exam exercises
-│   └── norm.pdf           # 42's coding standards
+│   └── norm.pdf           # 42's coding standards (Norminette)
 │
 ├── subjects/              # Reference PDFs for future projects
-│   ├── level_00-02/       # First projects (libft, ft_printf, etc.)
-│   ├── level_03-05/       # Mid-level projects (minishell, philosophers)
-│   ├── level_06-08/       # Advanced projects (webserv, cub3d)
+│   ├── level_00-02/       # Libft, ft_printf, get_next_line
+│   ├── level_03-05/       # Minishell, philosophers, push_swap
+│   ├── level_06-08/       # Webserv, cub3d, ft_irc
 │   └── CPP_Modules/       # C++ curriculum (future)
 │
 └── projects/              # Future project implementations
+    ├── libft/
+    ├── ft_printf/
+    ├── get_next_line/
+    └── ...
 ```
 
 ---
 
 ## 📊 Current Progress
 
-### The Piscine (Selection Bootcamp)
-The 42 Piscine is an intensive bootcamp designed to teach C programming through pure problem-solving.
+### The C Piscine (Selection Bootcamp)
 
-**Progress**: Just started (November 2024)
+The 42 Piscine is an intensive bootcamp teaching C through pure problem-solving—no lectures, just exercises.
+
+**My Progress:**
 ```
-Shell Exercises:    [▰▱▱] In Progress
+Shell Exercises:    [███▱▱] 60% - Completing Shell00
 C Modules (00-13):  [▱▱▱▱▱▱▱▱▱▱▱▱▱▱] Not started
 Rush Projects:      [▱▱▱] Not started
-Exam Practice:      [▱▱▱▱▱] Ongoing
+Exam Practice:      [█▱▱▱▱] Ongoing
 ```
 
-**Current Focus**: Shell00 & Shell01 (Unix fundamentals)
+**Current Focus:** Shell00 (Unix commands, file permissions, git basics)
+
+**Next Up:** Shell01 → C00 (variables, loops, conditions)
 
 ---
 
 ## 🎯 Learning Approach
 
-### Why 42 School?
-
-**42's methodology**:
-- ✅ **No teachers, no lectures** - Pure problem-solving
-- ✅ **Project-based learning** - Learn by building
-- ✅ **Peer learning** - Collaboration and code reviews
-- ✅ **C-focused** - Master the fundamentals first
-
 ### My Self-Study Strategy
 
-Since I'm self-studying (not enrolled at an official 42 campus):
+Since I'm not enrolled at an official 42 campus:
 
-1. **Follow official subjects** - Using exact project PDFs
-2. **No shortcuts** - Write every line of code myself
-3. **Strict standards** - Zero memory leaks, norminette compliant
-4. **Public accountability** - All work documented on GitHub
-5. **Community engagement** - r/42Born2Code, Discord communities
+1. **Follow official project PDFs** from [42 Subjects Repository](https://github.com/Ian-Orwel/42-Cursus-Subjects)
+2. **No shortcuts** — Write every line myself, no copy-paste
+3. **Strict standards** — Zero memory leaks (Valgrind), Norminette compliant
+4. **Public accountability** — All work documented on GitHub
+5. **Community learning** — r/42Born2Code, Discord for help when stuck (concepts, not solutions)
+
+### When I Get Stuck (48-Hour Rule)
+
+- **Hours 0-2:** Try solving myself
+- **Hours 2-6:** Debug with gdb, add prints, draw on paper
+- **Hours 6-12:** Research the concept (not the solution!)
+- **Hours 12-24:** Take break, sleep on it
+- **Hours 24-48:** Start from scratch
+- **After 48h:** Ask for help on concepts (not solutions)
 
 ---
 
 ## 🛠️ Tech Stack & Tools
 
-**Languages**: C, Shell scripting  
-**Tools**: gcc, make, gdb, valgrind, norminette, Git  
-**Editor**: Neovim / VSCode with Vim  
-**OS**: Linux (Ubuntu)
+**Languages:** C, Shell scripting  
+**Compiler:** gcc with strict flags (`-Wall -Wextra -Werror`)  
+**Tools:**
+- `make` — Build automation
+- `gdb` — Debugging
+- `valgrind` — Memory leak detection
+- `norminette` — 42's coding standard checker
+- Git — Version control
+
+**Editor:** Neovim / VSCode with Vim bindings  
+**OS:** Linux (Ubuntu)
 
 ---
 
 ## 🗓️ Roadmap
 
-### Phase 1: Piscine (Nov 2024 - Jan 2025)
-**Goal**: Complete all Shell and C Piscine exercises
+### Phase 1: C Piscine (Nov 2024 - Jan 2025)
+**Goal:** Complete all Shell and C Piscine exercises
 
 - [x] Start Piscine (Nov 1, 2024)
-- [ ] Complete Shell00-01
-- [ ] Complete C00-C07 (fundamentals)
-- [ ] Complete C08-C13 (advanced)
-- [ ] Practice exam exercises
+- [ ] Shell00-01: Unix fundamentals
+- [ ] C00-C04: Basics (variables, loops, functions, strings)
+- [ ] C05-C07: Intermediate (recursion, pointers, malloc)
+- [ ] C08-C13: Advanced (function pointers, structs, file I/O)
 
-### Phase 2: Core Projects (Feb - Apr 2025)
-**Goal**: Build first major projects
+### Phase 2: Core Projects (Feb - Apr 2026)
+**Goal:** Build first major projects
 
-- [ ] Libft - Build my own C library (43 functions)
-- [ ] ft_printf - Recreate printf()
-- [ ] get_next_line - File reading with static variables
+- [ ] **Libft** — Build my own C library (43 functions)
+- [ ] **ft_printf** — Recreate printf() with variadic functions
+- [ ] **get_next_line** — File reading with static variables
+- [ ] **push_swap** — Sorting algorithms with limited operations
 
-### Phase 3: Full-Stack Transition (May - Aug 2025)
-**Goal**: Apply fundamentals to modern development
+### Phase 3: Advanced Projects (May - Aug 2026)
+**Goal:** Complex systems programming
 
-After relocating to Connecticut, USA:
-- Translate C knowledge to full-stack development
-- JavaScript, TypeScript, React, Python
-- Build portfolio projects
-- Prepare for job search
+- [ ] **Minishell** — Build a Unix shell (pipes, redirections, signals)
+- [ ] **Philosophers** — Dining philosophers with threads/mutexes
+- [ ] **Webserv** or **ft_irc** — HTTP server or IRC server from scratch
+
+### Phase 4: C++ & Beyond (Sept 2026+)
+**Goal:** Transition to high-level development
+
+- Apply C fundamentals to modern languages
+- Translate knowledge to JavaScript, TypeScript, Python
+- Build full-stack applications
+- Contribute to open source
 
 ---
 
-## 🧮 The Math Advantage
+## 🧮 The Mathematics Advantage
 
-My mathematics background provides:
+My math degree provides:
 
-- **Abstract reasoning** for complex algorithm design
-- **Proof-based thinking** for debugging and verification
+- **Abstract reasoning** for algorithm design
+- **Proof-based thinking** for debugging and correctness
 - **Pattern recognition** across data structures
-- **Rigorous logic** for writing correct, efficient code
+- **Rigorous logic** for writing efficient code
+- **Persistence** through difficult problems (math trains this!)
 
-Mathematics taught me to think in systems and prove correctness—skills that translate directly to software engineering.
+Mathematics taught me to **think in systems** and **prove correctness**—skills that translate directly to software.
 
 ---
 
 ## 📚 Resources
 
-**Books**:
-- "The C Programming Language" (K&R)
+**Official:**
+- [42 Subjects Repository](https://github.com/Ian-Orwel/42-Cursus-Subjects) — Official project PDFs
+- [42 Norminette](https://github.com/42School/norminette) — Coding standard checker
 
-**Communities**:
-- [r/42Born2Code](https://reddit.com/r/42Born2Code)
-- 42 School Discord servers
-- [Official 42 Subjects](https://github.com/Ian-Orwel/42-Cursus-Subjects)
+**Books:**
+- "The C Programming Language" by Kernighan & Ritchie (K&R Bible)
+- "Computer Systems: A Programmer's Perspective"
 
-**Documentation**:
-- [cppreference.com](https://en.cppreference.com/w/c)
-- [42 Norminette](piscine/norm.pdf)
+**Communities:**
+- [r/42Born2Code](https://reddit.com/r/42Born2Code) — Reddit community
+- 42 School Discord servers — Peer support
+
+**Documentation:**
+- [cppreference.com](https://en.cppreference.com/w/c) — C reference
+- Linux man pages — `man 3 printf`, etc.
 
 ---
 
 ## 🎓 Related Learning
 
-This 42 School journey is part of my comprehensive learning:
+This 42 journey is part of my comprehensive software engineering path:
 
-- 🐍 [Python Foundations](https://github.com/alienmem/python-foundations) - Python for Everybody
-- 🗄️ [Harvard CS50-SQL](https://github.com/alienmem/harvard-cs50-sql) - Completed ✓
-- 🏫 [IEFP Coursework](https://github.com/alienmem/iefp-coursework) - Professional certification
+- 🌐 [PHP MySQL Forum Platform](https://github.com/alienmem/php-mysql-forum-platform) — Full-stack web application
+- 🗄️ [Harvard CS50-SQL](https://github.com/alienmem/harvard-cs50-sql) — Database fundamentals
+- 🏫 [Professional Programming Portfolio](https://github.com/alienmem/professional-programming-portfolio) — IEFP certification
 
-**Building from fundamentals (C) → applications (full-stack)**
+**Building from fundamentals (C, systems) → applications (web, full-stack)**
 
 ---
 
-## 💼 About This Repository
+## 💼 Why This Matters
 
-**Purpose**: 
-- Document my self-study journey through 42 School curriculum
-- Serve as a learning resource for others
-- Demonstrate fundamentals-first approach to software engineering
-- Build portfolio for May 2025 job search
+**Purpose of this repository:**
+- Document my self-study journey
+- Serve as learning resource for others
+- Demonstrate fundamentals-first approach
+- Build portfolio for June 2026 job search in Connecticut, USA
 
-**Why Public?**
+**Why public?**
 - Accountability through transparency
 - Help others on similar paths
-- Showcase learning process to potential employers
+- Showcase learning process to employers
 - Build in public
 
 ---
 
 ## 📫 Connect
 
-I'm relocating to **Connecticut, USA** in May 2025 and will be seeking **Software Engineer** opportunities.
+Relocating to **Connecticut, USA** in June 2026 for **Software Engineer** opportunities.
 
-**Contact**:
-- 📧 Email: tony101123cardoso@icloud.com
-- 💼 LinkedIn: [Connect with me](#) (Coming soon)
-- 🐙 GitHub: [@alienmem](https://github.com/alienmem)
+**Contact:**
+- 📧 tony101123cardoso@icloud.com
+- 💼 LinkedIn (Coming soon)
+- 🔗 [GitHub Profile](https://github.com/alienmem)
 
-**Interested in**:
-- Full-stack development positions
-- Backend engineering roles
+**Interested in:**
+- Backend/systems engineering roles
 - Companies valuing strong fundamentals
 - Connecticut-based opportunities
 
@@ -205,17 +250,17 @@ I'm relocating to **Connecticut, USA** in May 2025 and will be seeking **Softwar
 
 ## 📜 License
 
-This repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - See [LICENSE](LICENSE) file
 
-All 42 School subjects and official materials remain the property of École 42.
+All 42 School subjects and materials remain property of École 42.
 
 ---
 
 ## 🙏 Acknowledgments
 
-- **École 42** for making their curriculum accessible
-- **42 Community** (r/42Born2Code, Discord) for support and resources
-- **Open-source contributors** who share guides and testers
+- **École 42** for making curriculum accessible
+- **42 Community** (r/42Born2Code, Discord) for support
+- **Open-source contributors** sharing guides and testers
 
 ---
 
@@ -224,8 +269,7 @@ All 42 School subjects and official materials remain the property of École 42.
 *"The only way to learn a new programming language is by writing programs in it."*  
 — Dennis Ritchie (Creator of C)
 
-**Journey started**: November 1, 2024  
-**Last updated**: November 13, 2024
+**Journey started:** November 1, 2024  
+**Last updated:** November 25, 2024
 
 </div>
-
