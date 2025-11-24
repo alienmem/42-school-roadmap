@@ -6,7 +6,7 @@
 
 Self-studying École 42's legendary C programming curriculum to build unshakeable fundamentals from the ground up.
 
-**Started:** November 1, 2024  
+**Started:** November 1, 2025  
 **Current Phase:** C Piscine (Shell & C exercises)  
 **Status:** Active Learning  
 **Goal:** Master systems programming fundamentals
@@ -83,15 +83,17 @@ The 42 Piscine is an intensive bootcamp teaching C through pure problem-solving�
 
 **My Progress:**
 ```
-Shell Exercises:    [███▱▱] 60% - Completing Shell00
+Shell Exercises:    [████▱] 80% - Shell00 ✅ Complete! Starting Shell01
+C Modules (00-13):  [▱▱▱▱▱▱▱▱▱▱▱▱▱▱] Not started
 C Modules (00-13):  [▱▱▱▱▱▱▱▱▱▱▱▱▱▱] Not started
 Rush Projects:      [▱▱▱] Not started
 Exam Practice:      [█▱▱▱▱] Ongoing
 ```
 
-**Current Focus:** Shell00 (Unix commands, file permissions, git basics)
+**Current Focus:** Shell01 (Shell scripting fundamentals)
+**Completed:** Shell00 (Nov 25, 2024)
 
-**Next Up:** Shell01 → C00 (variables, loops, conditions)
+**Next Up:** C00 → C01 (variables, loops, conditions)
 
 ---
 
